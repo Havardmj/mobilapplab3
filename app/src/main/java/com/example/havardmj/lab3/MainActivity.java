@@ -16,30 +16,27 @@ import android.widget.ImageView;
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
     //sensor obj from sensorEventListner class
-    private SensorManager thisSensor;               //sensorManager
-    private Sensor sensor;                      //gravitysensor
+    private SensorManager thisSensor;
+    private Sensor sensor;
 
     private ImageView objectb;  //ball obj
     private int gamewidth = 0;   //width-of-frame
     private int gameheight = 0;   //height-of-frame
     private int rad = 0;        //radius
 
-    private ToneGenerator tg;   //for sound effect      //tonegenerator
-    private DisplayMetrics dm; //screen height & width  //display metrics
-    private int height = 0;
+    private ToneGenerator tg;   //for sound effect
+
+    private int height = 0;         
     private int width = 0;
 
     //initialize position for ball
-    private float positionY;
-    private float positionX;
-
     private float newPositionX;
     private float newPositionY;
 
     @Override
     protected  void onResume(){ //add listener on g-sensor when activated again
         super.onResume();
-        thisSensor.registerListener(this,sensor,thisSensor.SENSOR_DELAY_FASTEST);
+        thisSensor.registerListener(this, sensor , SensorManager.SENSOR_DELAY_GAME);
     }
 
     @Override
@@ -50,6 +47,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     public void onSensorChanged(SensorEvent event) {
+
+        float positionY;
+        float positionX;
 
         positionX = objectb.getX(); //get current position
         positionY = objectb.getY();
@@ -72,12 +72,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         //init sound
         tg = new ToneGenerator(AudioManager.STREAM_MUSIC, ToneGenerator.TONE_CDMA_ANSWER);
 
-        gameheight=currentFrame.getHeight();    //get height and width from screen
         gamewidth=currentFrame.getWidth();
+        gameheight=currentFrame.getHeight();    //get height and width from screen
         rad = 25;
 
         //get display screen data
-        dm = new DisplayMetrics();
+        DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         height = dm.heightPixels;
         width = dm.widthPixels;
@@ -87,10 +87,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         //don't want sensor to get a nullpointer exception
         assert thisSensor != null;
         sensor = thisSensor.getDefaultSensor(Sensor.TYPE_GRAVITY);
-        thisSensor.registerListener(this, sensor, thisSensor.SENSOR_DELAY_FASTEST);
+        thisSensor.registerListener(this, sensor, SensorManager.SENSOR_DELAY_GAME);
 
     }
-    public void updateObjectPosition(){
+    private void updateObjectPosition(){
         Vibrator vb = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
         assert  vb != null;
 
@@ -103,6 +103,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             tg.startTone(ToneGenerator.TONE_CDMA_ABBR_INTERCEPT);
             objectb.setX( newPositionX + 35 );    //bounce back obj
         }
+
+
         if( (newPositionY - rad) >= (gameheight / 2) + 20 ){   //move obj up
 
             objectb.setY(newPositionY);
@@ -112,18 +114,23 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             tg.startTone(ToneGenerator.TONE_CDMA_ABBR_INTERCEPT);
             objectb.setY(newPositionY + 35);
         }
+
+
         if( (newPositionX + rad) > width - (gamewidth / 2) - 60){    //move obj right
 
             vb.vibrate(200);
             tg.startTone(ToneGenerator.TONE_CDMA_ABBR_INTERCEPT);
             objectb.setX((newPositionX - 35 ));
         }
+
+
         if( (newPositionY + rad) > height - (gameheight / 2) - 320){ //move obj down
 
             vb.vibrate(200);
             tg.startTone(ToneGenerator.TONE_CDMA_ABBR_INTERCEPT);
             objectb.setY(newPositionY - 35);
         }
+
     }
 
     @Override   //not used - but class implementation request Override method.
