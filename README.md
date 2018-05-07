@@ -1,5 +1,11 @@
 # mobilapplab3
 
+Linter Error : Cannot resolve Symbol 'Theme' in styles.xml =  <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+ Accordin to https://developer.android.com/guide/topics/ui/look-and-feel/themes This is right syntax, and the app works, without throwing any build exception/error. 
+ 
+ Linter warning : Obsolete Gradle Dependency on gradle build. Use older version to enable deployment on my phone.
+ 
+
 The Idea:
 
 Create an app consisting of a single activity, that only works in a single mode: landscape. The activity will have a black rectangle drawn
