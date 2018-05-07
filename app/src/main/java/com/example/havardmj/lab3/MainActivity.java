@@ -29,16 +29,38 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private int height = 0;
     private int width = 0;
 
+    //initialize position for ball
+    private float positionY;
+    private float positionX;
+
+    private float newPositionX;
+    private float newPositionY;
+
     @Override
     protected  void onResume(){ //add listener on g-sensor when activated again
         super.onResume();
         thisSensor.registerListener(this,sensor,thisSensor.SENSOR_DELAY_FASTEST);
     }
+
     @Override
     protected void onPause(){   //remove listener on sensor when not in use
         super.onPause();
         thisSensor.unregisterListener(this);
     }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+
+        positionX = objectb.getX(); //get current position
+        positionY = objectb.getY();
+
+        newPositionX = positionX + event.values[1];   //get next position
+        newPositionY = positionY + event.values[0];
+
+        updateObjectPosition();
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,19 +90,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         thisSensor.registerListener(this, sensor, thisSensor.SENSOR_DELAY_FASTEST);
 
     }
-
-    @Override   //not used
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {}
-
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-
-        float positionX = objectb.getX(); //get current position
-        float positionY = objectb.getY();
-
-        float newPositionX = positionX + event.values[1];   //get next position
-        float newPositionY = positionY + event.values[0];
-
+    public void updateObjectPosition(){
         Vibrator vb = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
         assert  vb != null;
 
@@ -115,4 +125,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             objectb.setY(newPositionY - 35);
         }
     }
+
+    @Override   //not used - but class implementation request Override method.
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {}
+
+
 }
