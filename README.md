@@ -1,9 +1,12 @@
 # mobilapplab3
 
 Linter Error : Cannot resolve Symbol 'Theme' in styles.xml =  <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+ 
  Accordin to https://developer.android.com/guide/topics/ui/look-and-feel/themes This is right syntax, and the app works, without throwing any build exception/error. 
  
- Linter warning : Obsolete Gradle Dependency on gradle build. Use older version to enable deployment on my phone.
+ Linter warning : Obsolete Gradle Dependency on gradle build x4 . Use older version to enable deployment on my phone.
+ 
+ Linter Usability : app in not indexable by Google search. App is not not Intended to be released. Only for education/lab purpose.
  
 
 The Idea:
