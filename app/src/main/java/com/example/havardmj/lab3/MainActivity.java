@@ -26,12 +26,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     private ToneGenerator tg;   //for sound effect
 
-    private int height = 0;         
+    private int height = 0;
     private int width = 0;
-
-    //initialize position for ball
-    private float newPositionX;
-    private float newPositionY;
 
     @Override
     protected  void onResume(){ //add listener on g-sensor when activated again
@@ -54,43 +50,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         positionX = objectb.getX(); //get current position
         positionY = objectb.getY();
 
-        newPositionX = positionX + event.values[1];   //get next position
-        newPositionY = positionY + event.values[0];
+        float newPositionX = positionX + event.values[1];
+        float newPositionY = positionY + event.values[0];
 
-        updateObjectPosition();
-
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        //get elements from Imageview
-        ImageView currentFrame = findViewById(R.id.currentFrame);
-        objectb = findViewById(R.id.obejctb);
-        //init sound
-        tg = new ToneGenerator(AudioManager.STREAM_MUSIC, ToneGenerator.TONE_CDMA_ANSWER);
-
-        gamewidth=currentFrame.getWidth();
-        gameheight=currentFrame.getHeight();    //get height and width from screen
-        rad = 25;
-
-        //get display screen data
-        DisplayMetrics dm = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(dm);
-        height = dm.heightPixels;
-        width = dm.widthPixels;
-
-        //get sensor
-        thisSensor = (SensorManager)getSystemService(SENSOR_SERVICE);
-        //don't want sensor to get a nullpointer exception
-        assert thisSensor != null;
-        sensor = thisSensor.getDefaultSensor(Sensor.TYPE_GRAVITY);
-        thisSensor.registerListener(this, sensor, SensorManager.SENSOR_DELAY_GAME);
-
-    }
-    private void updateObjectPosition(){
         Vibrator vb = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
         assert  vb != null;
 
@@ -132,6 +94,37 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
 
     }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        //get elements from Imageview
+        ImageView currentFrame = findViewById(R.id.currentFrame);
+        objectb = findViewById(R.id.obejctb);
+        //init sound
+        tg = new ToneGenerator(AudioManager.STREAM_MUSIC, ToneGenerator.TONE_CDMA_ANSWER);
+
+        gamewidth=currentFrame.getWidth();
+        gameheight=currentFrame.getHeight();    //get height and width from screen
+        rad = 25;
+
+        //get display screen data
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        height = dm.heightPixels;
+        width = dm.widthPixels;
+
+        //get sensor
+        thisSensor = (SensorManager)getSystemService(SENSOR_SERVICE);
+        //don't want sensor to get a nullpointer exception
+        assert thisSensor != null;
+        sensor = thisSensor.getDefaultSensor(Sensor.TYPE_GRAVITY);
+        thisSensor.registerListener(this, sensor, SensorManager.SENSOR_DELAY_GAME);
+
+    }
+
 
     @Override   //not used - but class implementation request Override method.
     public void onAccuracyChanged(Sensor sensor, int accuracy) {}
