@@ -16,23 +16,23 @@ import android.widget.ImageView;
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
     //sensor obj from sensorEventListner class
-    SensorManager thisSensor;
-    Sensor sensor;
+    private SensorManager thisSensor;               //sensorManager
+    private Sensor sensor;                      //gravitysensor
 
-    ImageView objectb;  //ball obj
-    int gamewidth = 0;   //width
-    int gameheight = 0;   //height
-    int rad = 0;        //radius
+    private ImageView objectb;  //ball obj
+    private int gamewidth = 0;   //width-of-frame
+    private int gameheight = 0;   //height-of-frame
+    private int rad = 0;        //radius
 
-    ToneGenerator tg;   //for sound effect
-    DisplayMetrics dm; //screen height & width
-    int height = 0;
-    int width = 0;
+    private ToneGenerator tg;   //for sound effect      //tonegenerator
+    private DisplayMetrics dm; //screen height & width  //display metrics
+    private int height = 0;
+    private int width = 0;
 
     @Override
     protected  void onResume(){ //add listener on g-sensor when activated again
         super.onResume();
-        thisSensor.registerListener(this,sensor,thisSensor.SENSOR_DELAY_GAME);
+        thisSensor.registerListener(this,sensor,thisSensor.SENSOR_DELAY_FASTEST);
     }
     @Override
     protected void onPause(){   //remove listener on sensor when not in use
@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         //get elements from Imageview
         ImageView currentFrame = findViewById(R.id.currentFrame);
-        ImageView objectb = findViewById(R.id.obejctb);
+        objectb = findViewById(R.id.obejctb);
         //init sound
         tg = new ToneGenerator(AudioManager.STREAM_MUSIC, ToneGenerator.TONE_CDMA_ANSWER);
 
@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         //don't want sensor to get a nullpointer exception
         assert thisSensor != null;
         sensor = thisSensor.getDefaultSensor(Sensor.TYPE_GRAVITY);
-        thisSensor.registerListener(this, sensor, thisSensor.SENSOR_DELAY_GAME);
+        thisSensor.registerListener(this, sensor, thisSensor.SENSOR_DELAY_FASTEST);
 
     }
 
@@ -74,36 +74,45 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        float x=objectb.getX(); //get current position
-        float y=objectb.getY();
-        float xx = x+event.values[1];   //get next position
-        float yy = y+event.values[0];
+
+        float positionX = objectb.getX(); //get current position
+        float positionY = objectb.getY();
+
+        float newPositionX = positionX + event.values[1];   //get next position
+        float newPositionY = positionY + event.values[0];
+
         Vibrator vb = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
         assert  vb != null;
 
-        if((xx-rad)>=(gamewidth/2)){    //move obj left
-            objectb.setX(xx);
+        if( (newPositionX - rad ) >=  gamewidth / 2  ){    //move obj left
+
+            objectb.setX(newPositionX);
         }else{                  //on boarder hit, set: vibrate and sound
+
             vb.vibrate(200);
             tg.startTone(ToneGenerator.TONE_CDMA_ABBR_INTERCEPT);
-            objectb.setX(xx+35);    //bounce back obj
+            objectb.setX( newPositionX + 35 );    //bounce back obj
         }
-        if((yy-rad)>=(gameheight/2)){   //move obj up
-            objectb.setY(yy);
+        if( (newPositionY - rad) >= (gameheight / 2) + 20 ){   //move obj up
+
+            objectb.setY(newPositionY);
         }else{
+
             vb.vibrate(200);    //on boarder hit, set: vibrate and sound
             tg.startTone(ToneGenerator.TONE_CDMA_ABBR_INTERCEPT);
-            objectb.setY(yy+35);
+            objectb.setY(newPositionY + 35);
         }
-        if((xx+rad)>width-(gamewidth/2)-60){    //move obj right
+        if( (newPositionX + rad) > width - (gamewidth / 2) - 60){    //move obj right
+
             vb.vibrate(200);
             tg.startTone(ToneGenerator.TONE_CDMA_ABBR_INTERCEPT);
-            objectb.setX((xx-35));
+            objectb.setX((newPositionX - 35 ));
         }
-        if((yy+rad)>height-(gameheight/2)-320){ //move obj down
+        if( (newPositionY + rad) > height - (gameheight / 2) - 320){ //move obj down
+
             vb.vibrate(200);
             tg.startTone(ToneGenerator.TONE_CDMA_ABBR_INTERCEPT);
-            objectb.setY(yy-35);
+            objectb.setY(newPositionY - 35);
         }
     }
 }
